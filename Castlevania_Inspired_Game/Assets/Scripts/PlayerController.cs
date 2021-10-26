@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer spriteRenderer;
 
     bool isGrounded;
+    bool Jump;
     
     [SerializeField]
     Transform  groundCheck;
@@ -23,7 +24,7 @@ public class PlayerController : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-      
+        Jump = false;
 
     }
 
@@ -34,14 +35,14 @@ public class PlayerController : MonoBehaviour
       if(Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"))){
 
             isGrounded = true;
-
+            
 
       }  
       else
       {
 
             isGrounded = false;
-
+            
         }
         
         if (Input.GetKey("d") || (Input.GetKey("right"))){
@@ -49,14 +50,16 @@ public class PlayerController : MonoBehaviour
             rb2d.velocity = new Vector2(runspeed, rb2d.velocity.y);
             spriteRenderer.flipX = false;
 
+            animator.Play("Player_walk");
 
-    
         }
         else if (Input.GetKey("a") || (Input.GetKey("left")))
         {
 
             rb2d.velocity = new Vector2(-runspeed, rb2d.velocity.y);
             spriteRenderer.flipX = true;
+
+            animator.Play("Player_walk");
 
 
 
@@ -66,13 +69,17 @@ public class PlayerController : MonoBehaviour
 
             rb2d.velocity = new Vector2(0, rb2d.velocity.y);
 
+            animator.Play("Player_idle");
+
         }
 
 
         if (Input.GetKey("space") && isGrounded)
         {
 
-            rb2d.velocity = new Vector2(rb2d.velocity.x, 6d );
+            rb2d.velocity = new Vector2(rb2d.velocity.x, 6 );
+
+            animator.SetBool("Jump", true);
 
 
 
