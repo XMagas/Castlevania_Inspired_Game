@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer spriteRenderer;
 
     bool isGrounded;
-    bool Jump;
+    
     
     [SerializeField]
     Transform  groundCheck;
@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        Jump = false;
+        
 
     }
 
