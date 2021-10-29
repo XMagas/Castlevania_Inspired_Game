@@ -9,12 +9,15 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb2d;
     SpriteRenderer spriteRenderer;
 
+    public Healthbar healthbar;
+
+    public int maxHealth = 100;
+    public int currentHealth;
+
     private string currentState;
 
     bool isGrounded;
 
-    private float xAxis;
-    private float yAxis;
     private bool isJumpPressed;
     
     [SerializeField]
@@ -47,10 +50,21 @@ public class PlayerController : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        
+        currentHealth = maxHealth;
+        healthbar.SetMaxHealth(maxHealth);
+
 
     }
 
+
+
+    void TakeDamage(int damage)
+    {
+
+        currentHealth -= damage;
+        healthbar.SetHealth(currentHealth);
+
+    }
 
     void ChangeAnimationState(string newState)
     {
@@ -71,7 +85,7 @@ public class PlayerController : MonoBehaviour
     {
 
         
-
+        // to check if jump is pressed
         if (Input.GetKey("space"))
         {
             isJumpPressed = true;
@@ -79,26 +93,30 @@ public class PlayerController : MonoBehaviour
             
         }
 
+        // to make a more fluid transistion to the walking animation 
+       if (runspeed == 0.1)
+       {
 
-        if (isGrounded) { 
-        
-            if(runspeed != 0)
-            {
-                ChangeAnimationState(PLAYER_WALK);
-
+            ChangeAnimationState(PLAYER_WALK);
 
 
-            }
-            else 
-            {
-                ChangeAnimationState(PLAYER_IDLE);
-            }
+       }
+       else if (runspeed == -0.1)
+       {
+
+            ChangeAnimationState(PLAYER_WALK);
+
+       }
+
+       // to prevent the controller from auto jumping and to also check if the player has jumped
+       if(isJumpPressed == true && isGrounded == false)
+       {
+
+            isJumpPressed = false;
 
 
- 
+
         }
-
-
 
     }
 
@@ -121,14 +139,15 @@ public class PlayerController : MonoBehaviour
 
             isGrounded = false;
             
-        }
-        
+      }
+        // Were the movement is updated based on what button is pressed and also updates the animation state
         if (Input.GetKey("d") || (Input.GetKey("right"))){
 
             rb2d.velocity = new Vector2(runspeed, rb2d.velocity.y);
             spriteRenderer.flipX = false;
 
-            
+            if (isGrounded)
+                ChangeAnimationState(PLAYER_WALK);
 
         }
         else if (Input.GetKey("a") || (Input.GetKey("left")))
@@ -136,8 +155,9 @@ public class PlayerController : MonoBehaviour
 
             rb2d.velocity = new Vector2(-runspeed, rb2d.velocity.y);
             spriteRenderer.flipX = true;
-
             
+            if (isGrounded)
+            ChangeAnimationState(PLAYER_WALK);
 
 
 
@@ -147,18 +167,19 @@ public class PlayerController : MonoBehaviour
 
             rb2d.velocity = new Vector2(0, rb2d.velocity.y);
 
-            
+            if (isGrounded)
+                ChangeAnimationState(PLAYER_IDLE);
 
         }
 
-
-        if (isJumpPressed && isGrounded)
+        // checks if the conditions are met to initiate the jump
+        if (isJumpPressed == true && isGrounded)
         {
 
-            rb2d.velocity = new Vector2(rb2d.velocity.x,JumpForce);
+            rb2d.velocity = new Vector2(rb2d.velocity.x, JumpForce);
 
             ChangeAnimationState(PLAYER_JUMP);
-            isJumpPressed = false;
+            
 
 
         }
