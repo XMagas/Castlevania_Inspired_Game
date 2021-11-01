@@ -27,9 +27,16 @@ public class PlayerCombat : MonoBehaviour
 
             Collider2D[] hitenemies = Physics2D.OverlapCircleAll(AttackPoint.position, AttackRange, enemyLayers);
 
-
+            Debug.Log("Attacking");
 
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+
+        Gizmos.DrawWireSphere(AttackPoint.position, AttackRange);
+
 
 
     }
